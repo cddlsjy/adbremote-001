@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -60,21 +61,39 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         findViewById(R.id.layout_setting_github).setOnClickListener(this);
         findViewById(R.id.layout_setting_orientation).setOnClickListener(this);
         tvOrientationValue = findViewById(R.id.tv_orientation_value);
-        currentOrientation = SharedData.getInstance().getInt("orientation", 0);
+        int savedOrientation = 0;
+        try {
+            SharedData sharedData = SharedData.getInstance();
+            if (sharedData != null) {
+                savedOrientation = sharedData.getInt("orientation", 0);
+            }
+        } catch (Exception e) {
+            Log.e("SettingActivity", "Failed to load orientation setting", e);
+            savedOrientation = 0;
+        }
+        if (savedOrientation >= 0 && savedOrientation <= 2) {
+            currentOrientation = savedOrientation;
+        } else {
+            currentOrientation = 0;
+        }
         updateOrientationDisplay();
     }
 
     private void applyOrientation() {
-        switch (currentOrientation) {
-            case 0:
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                break;
-            case 1:
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                break;
-            case 2:
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                break;
+        try {
+            switch (currentOrientation) {
+                case 0:
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                    break;
+                case 1:
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    break;
+                case 2:
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    break;
+            }
+        } catch (Exception e) {
+            Log.e("SettingActivity", "applyOrientation failed", e);
         }
     }
 
@@ -94,7 +113,14 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     private void setOrientation(int orientation) {
         currentOrientation = orientation;
-        SharedData.getInstance().put("orientation", orientation).commit();
+        try {
+            SharedData sharedData = SharedData.getInstance();
+            if (sharedData != null) {
+                sharedData.put("orientation", orientation).commit();
+            }
+        } catch (Exception e) {
+            Log.e("SettingActivity", "Failed to save orientation setting", e);
+        }
         updateOrientationDisplay();
         applyOrientation();
     }
