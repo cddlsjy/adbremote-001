@@ -24,6 +24,7 @@ import com.swx.adbremote.utils.AutoUpdater;
 import com.swx.adbremote.utils.Constant;
 import com.swx.adbremote.utils.Permission;
 import com.swx.adbremote.utils.ShareUtil;
+import com.swx.adbremote.utils.SharedData;
 import com.swx.adbremote.utils.ToastUtil;
 
 /**
@@ -59,7 +60,23 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         findViewById(R.id.layout_setting_github).setOnClickListener(this);
         findViewById(R.id.layout_setting_orientation).setOnClickListener(this);
         tvOrientationValue = findViewById(R.id.tv_orientation_value);
+        currentOrientation = SharedData.getInstance().getInt("orientation", 0);
         updateOrientationDisplay();
+        applyOrientation();
+    }
+
+    private void applyOrientation() {
+        switch (currentOrientation) {
+            case 0:
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                break;
+            case 1:
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                break;
+            case 2:
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                break;
+        }
     }
 
     private void updateOrientationDisplay() {
@@ -78,18 +95,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     private void setOrientation(int orientation) {
         currentOrientation = orientation;
+        SharedData.getInstance().put("orientation", orientation).commit();
         updateOrientationDisplay();
-        switch (orientation) {
-            case 0:
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                break;
-            case 1:
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                break;
-            case 2:
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                break;
-        }
+        applyOrientation();
     }
 
 
