@@ -2,7 +2,7 @@ name: Build APK
 
 on:
   push:
-    branches: [ blbl-api19 ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -24,15 +24,11 @@ jobs:
         with:
           gradle-version: '8.5'
 
-      # 临时注释 gradle.properties 中的 org.gradle.java.home 行
-      # 同时通过 -D 参数显式指定正确的 JAVA_HOME
       - name: Build APK (override java.home)
         run: |
-          # 备份并注释掉可能存在的错误 java.home 配置
           if [ -f gradle.properties ]; then
             sed -i 's/^org.gradle.java.home=/# &/' gradle.properties || true
           fi
-          # 使用 -D 参数显式指定正确的 JAVA_HOME
           gradle assembleDebug --no-daemon -Dorg.gradle.java.home=$JAVA_HOME
 
       - name: Upload APK
