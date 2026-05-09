@@ -62,7 +62,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         tvOrientationValue = findViewById(R.id.tv_orientation_value);
         currentOrientation = SharedData.getInstance().getInt("orientation", 0);
         updateOrientationDisplay();
-        applyOrientation();
     }
 
     private void applyOrientation() {
