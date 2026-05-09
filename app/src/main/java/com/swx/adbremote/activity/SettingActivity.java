@@ -1,10 +1,12 @@
 package com.swx.adbremote.activity;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +33,8 @@ import com.swx.adbremote.utils.ToastUtil;
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
 
     public QuestionDialog permissionDialog;
+    private TextView tvOrientationValue;
+    private int currentOrientation = 0; // 0: auto, 1: portrait, 2: landscape
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +57,39 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         findViewById(R.id.layout_setting_update).setOnClickListener(this);
         findViewById(R.id.layout_setting_fallback).setOnClickListener(this);
         findViewById(R.id.layout_setting_github).setOnClickListener(this);
+        findViewById(R.id.layout_setting_orientation).setOnClickListener(this);
+        tvOrientationValue = findViewById(R.id.tv_orientation_value);
+        updateOrientationDisplay();
+    }
+
+    private void updateOrientationDisplay() {
+        switch (currentOrientation) {
+            case 0:
+                tvOrientationValue.setText(getString(R.string.text_auto_orientation));
+                break;
+            case 1:
+                tvOrientationValue.setText(getString(R.string.text_portrait));
+                break;
+            case 2:
+                tvOrientationValue.setText(getString(R.string.text_landscape));
+                break;
+        }
+    }
+
+    private void setOrientation(int orientation) {
+        currentOrientation = orientation;
+        updateOrientationDisplay();
+        switch (orientation) {
+            case 0:
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                break;
+            case 1:
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                break;
+            case 2:
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                break;
+        }
     }
 
 
@@ -78,6 +115,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             openUrl(Constant.URL_GITHUB_FEEDBACK_PAGE);
         } else if (id == R.id.layout_setting_github) {
             openUrl(Constant.URL_GITHUB_CODE_PAGE);
+        } else if (id == R.id.layout_setting_orientation) {
+            currentOrientation = (currentOrientation + 1) % 3;
+            setOrientation(currentOrientation);
         }
     }
 

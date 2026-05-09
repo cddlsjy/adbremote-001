@@ -20,6 +20,8 @@ import com.swx.adbremote.R;
 import com.swx.adbremote.adapter.DeviceScanAdapter;
 import com.swx.adbremote.entity.DeviceInfo;
 import com.swx.adbremote.service.IpScanService;
+import com.swx.adbremote.utils.ADBConnectUtil;
+import com.swx.adbremote.utils.ToastUtil;
 
 import java.util.List;
 
@@ -34,11 +36,17 @@ public class DeviceScanDialog extends Dialog {
     
     private DeviceScanAdapter mAdapter;
     private IpScanService ipScanService;
-    private OnDeviceSelectedListener mListener;
+    private OnDeviceSelectedListener mSelectedListener;
+    private OnDeviceConnectedListener mConnectedListener;
     private boolean isScanning = false;
+    private boolean connectDirectly = false;
 
     public interface OnDeviceSelectedListener {
         void onDeviceSelected(DeviceInfo device);
+    }
+
+    public interface OnDeviceConnectedListener {
+        void onDeviceConnected(boolean success);
     }
 
     public DeviceScanDialog(@NonNull Context context) {
@@ -55,7 +63,7 @@ public class DeviceScanDialog extends Dialog {
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             int widthPixels = getContext().getResources().getDisplayMetrics().widthPixels;
             WindowManager.LayoutParams params = getWindow().getAttributes();
-            params.width = widthPixels - 100;
+            params.width = widthPixels - 60;
             getWindow().setAttributes(params);
         }
         
@@ -80,12 +88,37 @@ public class DeviceScanDialog extends Dialog {
         rvDevices.setLayoutManager(new LinearLayoutManager(getContext()));
         rvDevices.setAdapter(mAdapter);
         
-        mAdapter.setOnDeviceConnectListener(device -> {
-            if (mListener != null) {
-                mListener.onDeviceSelected(device);
-            }
-            dismiss();
-        });
+        mAdapter.setOnDeviceConnectListener(this::handleDeviceClick);
+    }
+
+    private void handleDeviceClick(DeviceInfo device) {
+        if (isScanning && ipScanService != null) {
+            ipScanService.stopScan();
+        }
+        
+        dismiss();
+        
+        if (connectDirectly && mConnectedListener != null) {
+            ADBConnectUtil.connect(device.getIpAddress(), device.getPort(), new ADBConnectUtil.OnConnectListener() {
+                @Override
+                public void onConnectSuccess() {
+                    ToastUtil.show("连接成功");
+                    if (mConnectedListener != null) {
+                        mConnectedListener.onDeviceConnected(true);
+                    }
+                }
+
+                @Override
+                public void onConnectFailed(String error) {
+                    ToastUtil.show("连接失败: " + error);
+                    if (mConnectedListener != null) {
+                        mConnectedListener.onDeviceConnected(false);
+                    }
+                }
+            });
+        } else if (mSelectedListener != null) {
+            mSelectedListener.onDeviceSelected(device);
+        }
     }
 
     private void initEvent() {
@@ -141,7 +174,7 @@ public class DeviceScanDialog extends Dialog {
             public void onScanError(String error) {
                 isScanning = false;
                 layoutScanning.setVisibility(View.GONE);
-                tvScanProgress.setText("扫描失败：" + error);
+                layoutEmpty.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -176,6 +209,12 @@ public class DeviceScanDialog extends Dialog {
     }
 
     public void setOnDeviceSelectedListener(OnDeviceSelectedListener listener) {
-        this.mListener = listener;
+        this.mSelectedListener = listener;
+        this.connectDirectly = false;
+    }
+
+    public void setOnDeviceConnectedListener(OnDeviceConnectedListener listener) {
+        this.mConnectedListener = listener;
+        this.connectDirectly = true;
     }
 }

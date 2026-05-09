@@ -46,6 +46,10 @@
     <string name="text_mute">静音</string>
     <string name="text_quirk">怪癖</string>
     <string name="text_layout">界面布局</string>
+    <string name="text_screen_orientation">屏幕方向</string>
+    <string name="text_auto_orientation">自动</string>
+    <string name="text_portrait">竖屏</string>
+    <string name="text_landscape">横屏</string>
     <string name="text_enter">前往</string>
     <string name="text_action">按键行为</string>
     <string name="text_manage_app">管理应用程序</string>
@@ -112,7 +116,14 @@
     <string name="text_remove_app_info">确定要删除此应用程序?</string>
     <string name="text_remove_connect">删除连接</string>
     <string name="text_remove_connect_info">你确定要删除选中的连接?</string>
+    <string name="text_scan">扫描</string>
     <string name="text_scan_ip">扫描 IP</string>
+    <string name="hint_ip_address">请输入IP地址</string>
+    <string name="text_up">上</string>
+    <string name="text_down">下</string>
+    <string name="text_left">左</string>
+    <string name="text_right">右</string>
+    <string name="text_mouse">鼠标模式</string>
     <string name="text_scan_devices">发现设备</string>
     <string name="no_devices_found">未发现 ADB 设备，请确认设备已开启 ADB 调试</string>
     <string name="text_connect">连接</string>

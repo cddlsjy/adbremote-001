@@ -145,6 +145,17 @@ public class ConnectOperateDialog extends Dialog {
         this.port = connect.getPort().toString();
     }
 
+    public void setIpAndPort(String ip, int port) {
+        this.ip = ip;
+        this.port = String.valueOf(port);
+        if (textIp != null) {
+            textIp.setText(ip);
+        }
+        if (textPort != null) {
+            textPort.setText(String.valueOf(port));
+        }
+    }
+
     @Override
     public void dismiss() {
         super.dismiss();

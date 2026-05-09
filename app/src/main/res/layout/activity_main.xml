@@ -36,16 +36,7 @@
                 app:srcCompat="@drawable/ic_setting"
                 app:tint="@color/text_color" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:gravity="center|center_horizontal|center_vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btn_tv_shutdown"
-                app:layout_constraintStart_toEndOf="@+id/btn_setting"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
+            <TextView
                     android:id="@+id/tv_choose_connect"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -53,9 +44,65 @@
                     android:textSize="20sp"
                     android:textAlignment="center"
                     android:text="@string/text_connect_android_tv"
-                    android:textColor="@color/text_color" />
+                    android:textColor="@color/text_color"
+                    android:visibility="gone" />
 
-            </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/background_input_connect"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_tv_shutdown"
+                    app:layout_constraintStart_toEndOf="@+id/btn_setting"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <EditText
+                        android:id="@+id/et_ip_address"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="@string/hint_ip_address"
+                        android:textColor="@color/text_color"
+                        android:textColorHint="@color/text_color_gray"
+                        android:textSize="14sp"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="8dp"
+                        android:inputType="textUri|numberDecimal"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true" />
+
+                    <ImageButton
+                        android:id="@+id/btn_main_scan"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@null"
+                        android:contentDescription="@string/text_scan"
+                        android:scaleType="fitCenter"
+                        android:paddingEnd="4dp"
+                        app:srcCompat="@drawable/ic_search"
+                        app:tint="@color/green" />
+
+                    <View
+                        android:layout_width="1px"
+                        android:layout_height="24dp"
+                        android:background="@color/line_color" />
+
+                    <Button
+                        android:id="@+id/btn_connect"
+                        android:layout_width="60dp"
+                        android:layout_height="32dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/background_btn_circle_ps"
+                        android:text="@string/text_connect"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
 
             <ImageButton
                 android:id="@+id/btn_tv_shutdown"

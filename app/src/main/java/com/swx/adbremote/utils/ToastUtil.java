@@ -74,4 +74,8 @@ public class ToastUtil {
             });
         }
     }
+
+    public static void show(String message) {
+        showShort(message);
+    }
 }

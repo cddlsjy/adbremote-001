@@ -21,6 +21,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.KeyEvent;
+import android.widget.EditText;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -65,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ViewPager2 viewPagerPanel;
     private ImageButton btnSwitchPanel;
     private TextView tvChooseTvConnect;
+    private EditText etIpAddress;
+    private ImageButton btnMainScan;
+    private Button btnConnect;
     private int settingQuickAccess;
     private boolean isHapticFeedback;
     private boolean quickAccessOrderChange;
@@ -101,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (settingQuickAccess == SettingLayoutEnums.QUICK_ACCESS_APPLICATIONS.code()) {
             getQuickAccessData();
         }
+        updateConnectionStatus();
     }
 
     private void init() {
@@ -126,6 +134,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         tvChooseTvConnect = findViewById(R.id.tv_choose_connect);
+        etIpAddress = findViewById(R.id.et_ip_address);
+        btnMainScan = findViewById(R.id.btn_main_scan);
+        btnConnect = findViewById(R.id.btn_connect);
         RecyclerView mRvQuickAccess = findViewById(R.id.layout_quick_access_app);
         mQuickAccessAppsAdapter = new QuickAccessAppsAdapter(LayoutInflater.from(this), LinearLayoutManager.HORIZONTAL);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -171,6 +182,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initEvent() {
         mQuickAccessAppsAdapter.setOnItemClickListener(this::handleQuickAccessRvItemClick);
         tvChooseTvConnect.setOnClickListener(this);
+        btnMainScan.setOnClickListener(this);
+        btnConnect.setOnClickListener(this);
+        etIpAddress.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                connectToDevice();
+                return true;
+            }
+            return false;
+        });
         findViewById(R.id.btn_text_input).setOnClickListener(this);
         findViewById(R.id.btn_mute).setOnClickListener(this);
         findViewById(R.id.btn_setting).setOnClickListener(this);
@@ -232,6 +252,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (id == R.id.tv_choose_connect) {
             Intent intent = new Intent(this, ConnectInstanceActivity.class);
             startActivity(intent);
+        } else if (id == R.id.btn_main_scan) {
+            showScanDialog();
+        } else if (id == R.id.btn_connect) {
+            toggleConnection();
         } else if (id == R.id.btn_setting) {
             Intent intent = new Intent(this, SettingActivity.class);
             startActivity(intent);
@@ -310,6 +334,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ADBConnectUtil.pressMenu(callable);
         } else if (id == R.id.btn_mute) {
             ADBConnectUtil.pressMute(callable);
+        } else if (id == R.id.btn_up) {
+            ADBConnectUtil.pressUp(callable);
+        } else if (id == R.id.btn_down) {
+            ADBConnectUtil.pressDown(callable);
+        } else if (id == R.id.btn_left) {
+            ADBConnectUtil.pressLeft(callable);
+        } else if (id == R.id.btn_right) {
+            ADBConnectUtil.pressRight(callable);
+        } else if (id == R.id.btn_ok) {
+            ADBConnectUtil.pressOk(callable, false);
         }
 
     }
@@ -408,5 +442,67 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         chineseInputQuestionDialog.show();
+    }
+
+    private void showScanDialog() {
+        com.swx.adbremote.components.DeviceScanDialog scanDialog = new com.swx.adbremote.components.DeviceScanDialog(this);
+        scanDialog.setOnDeviceConnectedListener(success -> {
+            if (success) {
+                updateConnectionStatus();
+            }
+        });
+        scanDialog.show();
+    }
+
+    private void toggleConnection() {
+        ConnectInstance bean = ADBConnectUtil.getConnectedBean();
+        if (bean != null) {
+            disconnect();
+        } else {
+            connectToDevice();
+        }
+    }
+
+    private void connectToDevice() {
+        String ip = etIpAddress.getText().toString().trim();
+        if (TextUtils.isEmpty(ip)) {
+            ToastUtil.show("请输入IP地址");
+            return;
+        }
+        
+        ADBConnectUtil.connect(ip, 5555, new ADBConnectUtil.OnConnectListener() {
+            @Override
+            public void onConnectSuccess() {
+                ToastUtil.show("连接成功");
+                updateConnectionStatus();
+            }
+
+            @Override
+            public void onConnectFailed(String error) {
+                ToastUtil.show("连接失败: " + error);
+            }
+        });
+    }
+
+    private void disconnect() {
+        ADBConnectUtil.disconnect();
+        updateConnectionStatus();
+        ToastUtil.show("已断开连接");
+    }
+
+    private void updateConnectionStatus() {
+        ConnectInstance bean = ADBConnectUtil.getConnectedBean();
+        if (bean != null) {
+            etIpAddress.setText(bean.getIp());
+            etIpAddress.setEnabled(false);
+            btnMainScan.setEnabled(false);
+            btnConnect.setText("断开");
+            btnConnect.setBackgroundResource(R.drawable.background_btn_circle_pm);
+        } else {
+            etIpAddress.setEnabled(true);
+            btnMainScan.setEnabled(true);
+            btnConnect.setText("连接");
+            btnConnect.setBackgroundResource(R.drawable.background_btn_circle_ps);
+        }
     }
 }

@@ -29,4 +29,5 @@
     <color name="layout_btn_bg_color">#282828</color>
     <color name="switch_color">#A0EEE1</color>
     <color name="switch_color_bg">#80A0EEE1</color>
+    <color name="input_bg_color">#2A2A2A</color>
 </resources>

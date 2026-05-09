@@ -61,6 +61,7 @@ public class ConnectInstanceActivity extends AppCompatActivity implements View.O
     private ImageButton btnEdit;
     private RecyclerView rvConnect;
     private ImageButton btnNewConnect;
+    private ImageButton btnScanIp;
     private ConnectInstanceAdapter mDataAdapter;
     private Handler handler;
     private ConnectOperateDialog dialog;
@@ -107,6 +108,8 @@ public class ConnectInstanceActivity extends AppCompatActivity implements View.O
         findViewById(R.id.btn_trash).setOnClickListener(this);
         btnNewConnect = findViewById(R.id.btn_new_connect);
         btnNewConnect.setOnClickListener(this);
+        btnScanIp = findViewById(R.id.btn_scan_ip);
+        btnScanIp.setOnClickListener(this);
         textTitle = findViewById(R.id.text_title);
         btnBackTo = findViewById(R.id.btn_back_to);
         btnBackTo.setOnClickListener(this);
@@ -191,6 +194,8 @@ public class ConnectInstanceActivity extends AppCompatActivity implements View.O
                 // 添加连接
                 showDialog();
             }
+        } else if (id == R.id.btn_scan_ip) {
+            showScanDialog();
         } else if (id == R.id.btn_edit) {
             // 编辑连接
             showDialog();
@@ -394,6 +399,16 @@ public class ConnectInstanceActivity extends AppCompatActivity implements View.O
             dialog.setData(instance);
         }
         dialog.show();
+    }
+
+    private void showScanDialog() {
+        com.swx.adbremote.components.DeviceScanDialog scanDialog = new com.swx.adbremote.components.DeviceScanDialog(this);
+        scanDialog.setOnDeviceConnectedListener(success -> {
+            if (success) {
+                finish();
+            }
+        });
+        scanDialog.show();
     }
 
     /**

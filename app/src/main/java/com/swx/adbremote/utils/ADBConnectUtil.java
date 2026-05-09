@@ -34,9 +34,49 @@ public class ADBConnectUtil {
         public void done(boolean result, String msg);
     }
 
+    public interface OnConnectListener {
+        void onConnectSuccess();
+        void onConnectFailed(String error);
+    }
+
     public static void disconnect() {
         adbConnection = null;
         bean = null;
+    }
+
+    public static void connect(String ip, int port, OnConnectListener listener) {
+        ConnectInstance instance = new ConnectInstance();
+        instance.setIp(ip);
+        instance.setPort(port);
+        bean = instance;
+        adbConnection = null;
+        
+        BackgroundExecutor.execute(() -> {
+            Socket socket = null;
+            try {
+                socket = new Socket(ip, port);
+            } catch (IOException e) {
+                listener.onConnectFailed("无法连接到设备");
+                return;
+            }
+            
+            if (crypto == null) {
+                try {
+                    crypto = AdbCrypto.generateAdbKeyPair(DatatypeConverter::printBase64Binary);
+                } catch (NoSuchAlgorithmException e) {
+                    listener.onConnectFailed("生成密钥失败");
+                    return;
+                }
+            }
+            
+            try {
+                adbConnection = AdbConnection.create(socket, crypto);
+                adbConnection.connect();
+                listener.onConnectSuccess();
+            } catch (IOException | InterruptedException e) {
+                listener.onConnectFailed("连接失败: " + e.getMessage());
+            }
+        });
     }
 
     public static ADBConnectUtil.ShellExecCallable callable = (result, msg) -> {
