@@ -92,15 +92,15 @@
                         android:layout_height="24dp"
                         android:background="@color/line_color" />
 
-                    <Button
+                    <ImageButton
                         android:id="@+id/btn_connect"
-                        android:layout_width="60dp"
-                        android:layout_height="32dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/background_btn_circle_ps"
-                        android:text="@string/text_connect"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
+                        android:background="@null"
+                        android:contentDescription="@string/text_connect"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_disconnect" />
 
                 </LinearLayout>
 

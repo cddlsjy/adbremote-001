@@ -8,7 +8,10 @@ public enum SettingLayoutEnums {
     NAVIGATION_DIRECTION(1, "方向键"),
     QUICK_ACCESS_APPLICATIONS(3, "应用"),
     QUICK_ACCESS_MEDIA_BUTTONS(4, "媒体按钮"),
-    QUICK_ACCESS_NONE(5, "没有东西");
+    QUICK_ACCESS_NONE(5, "没有东西"),
+    BACKGROUND_DARK(10, "深色"),
+    BACKGROUND_GRAY(11, "灰色"),
+    BACKGROUND_LIGHT(12, "亮色");
 
     private int code;
     private String desc;

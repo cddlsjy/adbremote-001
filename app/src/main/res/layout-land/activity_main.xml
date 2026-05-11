@@ -26,17 +26,33 @@
             app:srcCompat="@drawable/ic_setting"
             app:tint="@color/text_color" />
 
+        <TextView
+            android:id="@+id/tv_choose_connect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="@string/text_connect_android_tv"
+            android:textColor="@color/text_color"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ll_ip_bar"
+            app:layout_constraintStart_toEndOf="@+id/btn_setting"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <LinearLayout
+            android:id="@+id/ll_ip_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:background="@drawable/background_input_connect"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_tv_shutdown"
-            app:layout_constraintStart_toEndOf="@+id/btn_setting"
+            app:layout_constraintStart_toEndOf="@+id/tv_choose_connect"
             app:layout_constraintTop_toTopOf="parent">
 
             <EditText
@@ -46,12 +62,12 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:hint="@string/hint_ip_address"
-                android:textColor="@color/text_color"
-                android:textColorHint="@color/text_color_gray"
-                android:textSize="14sp"
+                android:inputType="textUri|numberDecimal"
                 android:paddingStart="12dp"
                 android:paddingEnd="8dp"
-                android:inputType="textUri|numberDecimal" />
+                android:textColor="@color/text_color"
+                android:textColorHint="@color/text_color_gray"
+                android:textSize="14sp" />
 
             <ImageButton
                 android:id="@+id/btn_main_scan"
@@ -59,8 +75,8 @@
                 android:layout_height="40dp"
                 android:background="@null"
                 android:contentDescription="@string/text_scan"
-                android:scaleType="fitCenter"
                 android:paddingEnd="4dp"
+                android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_search"
                 app:tint="@color/green" />
 
@@ -108,14 +124,14 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <ImageButton
                     android:id="@+id/btn_tv_media_prev"
@@ -128,15 +144,37 @@
                     app:tint="@color/white" />
 
                 <ImageButton
+                    android:id="@+id/btn_tv_media_rewind"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/background_btn_circle_ps"
+                    android:contentDescription="@string/text_back_video"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_video_back"
+                    app:tint="@color/white" />
+
+                <ImageButton
                     android:id="@+id/btn_tv_media_play_pause"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:background="@drawable/background_btn_circle_pm"
                     android:contentDescription="@string/text_play_or_pause"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/ic_video_play_pause"
+                    app:tint="@color/white" />
+
+                <ImageButton
+                    android:id="@+id/btn_tv_media_fast_forward"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/background_btn_circle_ps"
+                    android:contentDescription="@string/text_forward_video"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_video_forward"
                     app:tint="@color/white" />
 
                 <ImageButton
@@ -151,68 +189,73 @@
 
             </LinearLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/layout_quick_access_app"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="12dp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/layout_quick_access_none"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_mute"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_btn_circle_pm"
+                    android:contentDescription="@string/text_mute"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_mute"
+                    app:tint="@color/text_color" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+                    android:layout_marginStart="15dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <ImageButton
-                        android:id="@+id/btn_mute"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/background_btn_circle_pm"
-                        android:contentDescription="@string/text_mute"
+                        android:id="@+id/btn_turn_up_volume"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:background="@drawable/background_btn_circle_ps"
+                        android:contentDescription="@string/text_add_sound"
                         android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/ic_mute"
-                        app:tint="@color/text_color" />
+                        android:src="@drawable/ic_sound_add"
+                        app:tint="@color/white" />
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tv_volume_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:layout_marginTop="4dp"
+                        android:text="@string/text_sound"
+                        android:textAlignment="center"
+                        android:textColor="@color/text_color"
+                        android:textSize="12sp" />
 
-                        <ImageButton
-                            android:id="@+id/btn_turn_up_volume"
-                            android:layout_width="55dp"
-                            android:layout_height="55dp"
-                            android:background="@drawable/background_btn_circle_ps"
-                            android:contentDescription="@string/text_add_sound"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_sound_add"
-                            app:tint="@color/white" />
-
-                        <TextView
-                            android:id="@+id/tv_volume_label"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/text_sound"
-                            android:textAlignment="center"
-                            android:textColor="@color/text_color"
-                            android:textSize="12sp"
-                            android:layout_marginTop="4dp" />
-
-                        <ImageButton
-                            android:id="@+id/btn_turn_down_volume"
-                            android:layout_width="55dp"
-                            android:layout_height="55dp"
-                            android:layout_marginTop="4dp"
-                            android:background="@drawable/background_btn_circle_ps"
-                            android:contentDescription="@string/text_subtract_sound"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_sound_subtract"
-                            app:tint="@color/white" />
-
-                    </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/btn_turn_down_volume"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/background_btn_circle_ps"
+                        android:contentDescription="@string/text_subtract_sound"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_sound_subtract"
+                        app:tint="@color/white" />
 
                 </LinearLayout>
 
@@ -225,8 +268,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="200dp"
@@ -237,8 +280,8 @@
                     android:id="@+id/btn_up"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:layout_centerHorizontal="true"
                     android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/background_btn_circle_pm"
                     android:contentDescription="@string/text_up"
@@ -250,8 +293,8 @@
                     android:id="@+id/btn_left"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/background_btn_circle_pm"
                     android:contentDescription="@string/text_left"
@@ -274,8 +317,8 @@
                     android:id="@+id/btn_right"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
                     android:background="@drawable/background_btn_circle_pm"
                     android:contentDescription="@string/text_right"
@@ -287,8 +330,8 @@
                     android:id="@+id/btn_down"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:layout_centerHorizontal="true"
                     android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/background_btn_circle_pm"
                     android:contentDescription="@string/text_down"
@@ -302,8 +345,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <ImageButton
                     android:id="@+id/btn_tv_home"
@@ -334,16 +377,16 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <GridLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:columnCount="2"
-                android:rowCount="2"
                 android:alignmentMode="alignMargins"
-                android:columnOrderPreserved="false">
+                android:columnCount="2"
+                android:columnOrderPreserved="false"
+                android:rowCount="2">
 
                 <ImageButton
                     android:id="@+id/btn_text_input"

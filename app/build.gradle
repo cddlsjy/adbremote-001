@@ -25,6 +25,14 @@ android {
                 }
             }
         }
+        debug {
+            minifyEnabled false
+            android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    outputFileName = "ADB_Remote_ATV_${releaseTime()}.apk";
+                }
+            }
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

@@ -67,6 +67,13 @@
     <string name="text_navigation">导航</string>
     <string name="text_direction_key">方向键</string>
     <string name="text_desc__direction_key">基于点击控制，就像物理遥控器上那样</string>
+    <string name="text_background_color">背景颜色</string>
+    <string name="text_bg_dark">深色</string>
+    <string name="text_desc_bg_dark">默认黑色背景</string>
+    <string name="text_bg_gray">灰色</string>
+    <string name="text_desc_bg_gray">柔和的灰色背景</string>
+    <string name="text_bg_light">亮色</string>
+    <string name="text_desc_bg_light">明亮的白色背景</string>
     <string name="text_behavior">按键行为</string>
     <string name="text_haptic_feedback">震动反馈</string>
     <string name="text_desc_haptic_feedback">按下遥控器按钮时的轻微震动反馈</string>

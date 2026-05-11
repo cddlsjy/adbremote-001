@@ -71,8 +71,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tvChooseTvConnect;
     private EditText etIpAddress;
     private ImageButton btnMainScan;
-    private Button btnConnect;
+    private ImageButton btnConnect;
     private int settingQuickAccess;
+    private int settingBackground;
     private boolean isHapticFeedback;
     private boolean quickAccessOrderChange;
     private Map<Integer, ViewGroup> layoutQuickAccessMap;
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     InputKeyboardDialog textInputDialog;
     QuestionDialog chineseInputQuestionDialog;
     private String originKeyboard;
+    private RecyclerView mRvQuickAccess;
 
     private ADBConnectUtil.ShellExecCallable switchKeyboardCallback;
 
@@ -99,11 +101,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
         initSetting();
-        ConnectInstance bean = ADBConnectUtil.getConnectedBean();
-        if (bean != null) {
-            tvChooseTvConnect.setText(bean.getAlias());
-        } else {
-            tvChooseTvConnect.setText(this.getString(R.string.text_connect_android_tv));
+        if (tvChooseTvConnect != null) {
+            ConnectInstance bean = ADBConnectUtil.getConnectedBean();
+            if (bean != null) {
+                tvChooseTvConnect.setText(bean.getAlias());
+            } else {
+                tvChooseTvConnect.setText(this.getString(R.string.text_connect_android_tv));
+            }
         }
         if (settingQuickAccess == SettingLayoutEnums.QUICK_ACCESS_APPLICATIONS.code()) {
             getQuickAccessData();
@@ -114,44 +118,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void init() {
         btnSwitchPanel = findViewById(R.id.btn_switch_panel);
         executorService = ScheduleUtil.getExecutorService();
-        ArrayList<Fragment> list = new ArrayList<>();
-        list.add(new RoundMenuFragment());
-        list.add(new NumKeyboardFragment());
         viewPagerPanel = findViewById(R.id.viewPagerPanel);
-        viewPagerPanel.setAdapter(new ViewPager2Adapter(this, list));
-        IndicatorView indicator = findViewById(R.id.indicator);
-        indicator.setIndicatorCount(2);
-        viewPagerPanel.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                indicator.setCurrentSelectedPosition(position);
-                indicator.postInvalidate();
-                if (position == 1) {
-                    btnSwitchPanel.setImageResource(R.drawable.ic_tel_keyboard);
-                } else {
-                    btnSwitchPanel.setImageResource(R.drawable.ic_round_menu);
-                }
+
+        if (viewPagerPanel != null) {
+            ArrayList<Fragment> list = new ArrayList<>();
+            list.add(new RoundMenuFragment());
+            list.add(new NumKeyboardFragment());
+            viewPagerPanel.setAdapter(new ViewPager2Adapter(this, list));
+            IndicatorView indicator = findViewById(R.id.indicator);
+            if (indicator != null) {
+                indicator.setIndicatorCount(2);
+                viewPagerPanel.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                    @Override
+                    public void onPageSelected(int position) {
+                        indicator.setCurrentSelectedPosition(position);
+                        indicator.postInvalidate();
+                        if (btnSwitchPanel != null) {
+                            if (position == 1) {
+                                btnSwitchPanel.setImageResource(R.drawable.ic_tel_keyboard);
+                            } else {
+                                btnSwitchPanel.setImageResource(R.drawable.ic_round_menu);
+                            }
+                        }
+                    }
+                });
             }
-        });
+        } else {
+            setupLandButtons();
+        }
+
         tvChooseTvConnect = findViewById(R.id.tv_choose_connect);
         etIpAddress = findViewById(R.id.et_ip_address);
         btnMainScan = findViewById(R.id.btn_main_scan);
         btnConnect = findViewById(R.id.btn_connect);
-        RecyclerView mRvQuickAccess = findViewById(R.id.layout_quick_access_app);
-        mQuickAccessAppsAdapter = new QuickAccessAppsAdapter(LayoutInflater.from(this), LinearLayoutManager.HORIZONTAL);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRvQuickAccess.setLayoutManager(layoutManager);
-        mRvQuickAccess.addItemDecoration(new RecyclerView.ItemDecoration() {
-            private final int unit = MetricsUtil.dp2px(4);
+        mRvQuickAccess = findViewById(R.id.layout_quick_access_app);
 
-            @Override
-            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
-                RecyclerViewItemEqspa.equilibriumAssignmentOfLinear(unit, outRect, view, parent);
-            }
-        });
-        mRvQuickAccess.setAdapter(mQuickAccessAppsAdapter);
+        if (mRvQuickAccess != null) {
+            mQuickAccessAppsAdapter = new QuickAccessAppsAdapter(LayoutInflater.from(this), LinearLayoutManager.HORIZONTAL);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            mRvQuickAccess.setLayoutManager(layoutManager);
+            mRvQuickAccess.addItemDecoration(new RecyclerView.ItemDecoration() {
+                private final int unit = MetricsUtil.dp2px(4);
+
+                @Override
+                public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                    super.getItemOffsets(outRect, view, parent, state);
+                    RecyclerViewItemEqspa.equilibriumAssignmentOfLinear(unit, outRect, view, parent);
+                }
+            });
+            mRvQuickAccess.setAdapter(mQuickAccessAppsAdapter);
+        }
+
         switchKeyboardCallback = (result, msg) -> {
             if (!result) {
                 ToastUtil.showToastThread(MainActivity.this.getString(R.string.text_connection_failed));
@@ -168,74 +186,154 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
                 if (msg.what == WHAT_LIST_QUICK_ACCESS) {
-                    mQuickAccessAppsAdapter.setData(BeanUtil.castList(msg.obj, AppItem.class));
+                    if (mQuickAccessAppsAdapter != null) {
+                        mQuickAccessAppsAdapter.setData(BeanUtil.castList(msg.obj, AppItem.class));
+                    }
                 }
             }
         };
 
         layoutQuickAccessMap = new HashMap<>();
-        layoutQuickAccessMap.put(SettingLayoutEnums.QUICK_ACCESS_MEDIA_BUTTONS.code(), (LinearLayout) findViewById(R.id.layout_quick_access_media_button));
-        layoutQuickAccessMap.put(SettingLayoutEnums.QUICK_ACCESS_APPLICATIONS.code(), mRvQuickAccess);
-        layoutQuickAccessMap.put(SettingLayoutEnums.QUICK_ACCESS_NONE.code(), (LinearLayout) findViewById(R.id.layout_quick_access_none));
+        View mediaLayout = findViewById(R.id.layout_quick_access_media_button);
+        if (mediaLayout != null) {
+            layoutQuickAccessMap.put(SettingLayoutEnums.QUICK_ACCESS_MEDIA_BUTTONS.code(), (ViewGroup) mediaLayout);
+        }
+        if (mRvQuickAccess != null) {
+            layoutQuickAccessMap.put(SettingLayoutEnums.QUICK_ACCESS_APPLICATIONS.code(), mRvQuickAccess);
+        }
+        View noneLayout = findViewById(R.id.layout_quick_access_none);
+        if (noneLayout != null) {
+            layoutQuickAccessMap.put(SettingLayoutEnums.QUICK_ACCESS_NONE.code(), (ViewGroup) noneLayout);
+        }
+    }
+
+    private void setupLandButtons() {
+        ImageButton btnUp = findViewById(R.id.btn_up);
+        ImageButton btnDown = findViewById(R.id.btn_down);
+        ImageButton btnLeft = findViewById(R.id.btn_left);
+        ImageButton btnRight = findViewById(R.id.btn_right);
+        ImageButton btnOk = findViewById(R.id.btn_ok);
+        ImageButton btnMouse = findViewById(R.id.btn_mouse_mode);
+
+        ADBConnectUtil.ShellExecCallable callable = ADBConnectUtil.callable;
+        if (btnUp != null) btnUp.setOnClickListener(v -> { hapticFeedback(v); ADBConnectUtil.pressUp(callable); });
+        if (btnDown != null) btnDown.setOnClickListener(v -> { hapticFeedback(v); ADBConnectUtil.pressDown(callable); });
+        if (btnLeft != null) btnLeft.setOnClickListener(v -> { hapticFeedback(v); ADBConnectUtil.pressLeft(callable); });
+        if (btnRight != null) btnRight.setOnClickListener(v -> { hapticFeedback(v); ADBConnectUtil.pressRight(callable); });
+        if (btnOk != null) btnOk.setOnClickListener(v -> { hapticFeedback(v); ADBConnectUtil.pressOk(callable, false); });
+        if (btnMouse != null) btnMouse.setOnClickListener(v -> ToastUtil.show("鼠标模式开发中"));
     }
 
     private void initEvent() {
-        mQuickAccessAppsAdapter.setOnItemClickListener(this::handleQuickAccessRvItemClick);
-        tvChooseTvConnect.setOnClickListener(this);
-        btnMainScan.setOnClickListener(this);
-        btnConnect.setOnClickListener(this);
-        etIpAddress.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                connectToDevice();
-                return true;
-            }
-            return false;
-        });
-        findViewById(R.id.btn_text_input).setOnClickListener(this);
-        findViewById(R.id.btn_mute).setOnClickListener(this);
-        findViewById(R.id.btn_setting).setOnClickListener(this);
-        findViewById(R.id.btn_switch_panel).setOnClickListener(this);
-        findViewById(R.id.btn_tv_home).setOnClickListener(this);
-        findViewById(R.id.btn_tv_back).setOnClickListener(this);
-        findViewById(R.id.btn_tv_shutdown).setOnClickListener(this);
-        findViewById(R.id.btn_tv_media_play_pause).setOnClickListener(this);
-        findViewById(R.id.btn_tv_media_prev).setOnClickListener(this);
-        findViewById(R.id.btn_tv_media_next).setOnClickListener(this);
-        findViewById(R.id.btn_tv_media_fast_forward).setOnClickListener(this);
-        findViewById(R.id.btn_tv_media_rewind).setOnClickListener(this);
-        findViewById(R.id.btn_tv_menu).setOnClickListener(this);
+        if (mQuickAccessAppsAdapter != null) {
+            mQuickAccessAppsAdapter.setOnItemClickListener(this::handleQuickAccessRvItemClick);
+        }
+        if (tvChooseTvConnect != null) tvChooseTvConnect.setOnClickListener(this);
+        if (btnMainScan != null) btnMainScan.setOnClickListener(this);
+        if (btnConnect != null) btnConnect.setOnClickListener(this);
+        if (etIpAddress != null) {
+            etIpAddress.setOnEditorActionListener((v, actionId, event) -> {
+                if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    connectToDevice();
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        setOnClickListenerIfExists(R.id.btn_text_input, this);
+        setOnClickListenerIfExists(R.id.btn_mute, this);
+        setOnClickListenerIfExists(R.id.btn_setting, this);
+        setOnClickListenerIfExists(R.id.btn_switch_panel, this);
+        setOnClickListenerIfExists(R.id.btn_tv_home, this);
+        setOnClickListenerIfExists(R.id.btn_tv_back, this);
+        setOnClickListenerIfExists(R.id.btn_tv_shutdown, this);
+        setOnClickListenerIfExists(R.id.btn_tv_media_play_pause, this);
+        setOnClickListenerIfExists(R.id.btn_tv_media_prev, this);
+        setOnClickListenerIfExists(R.id.btn_tv_media_next, this);
+        setOnClickListenerIfExists(R.id.btn_tv_media_fast_forward, this);
+        setOnClickListenerIfExists(R.id.btn_tv_media_rewind, this);
+        setOnClickListenerIfExists(R.id.btn_tv_menu, this);
+        setOnClickListenerIfExists(R.id.btn_up, this);
+        setOnClickListenerIfExists(R.id.btn_down, this);
+        setOnClickListenerIfExists(R.id.btn_left, this);
+        setOnClickListenerIfExists(R.id.btn_right, this);
+        setOnClickListenerIfExists(R.id.btn_ok, this);
 
         ImageView btnTurnUpVolume = findViewById(R.id.btn_turn_up_volume);
         ImageView btnTurnDownVolume = findViewById(R.id.btn_turn_down_volume);
-        btnTurnUpVolume.setOnLongClickListener(this::handleLongClick);
-        btnTurnDownVolume.setOnLongClickListener(this::handleLongClick);
-        btnTurnUpVolume.setOnTouchListener(this::handleLongpressBtnKeyEvent);
-        btnTurnDownVolume.setOnTouchListener(this::handleLongpressBtnKeyEvent);
-        btnTurnUpVolume.setOnClickListener(this);
-        btnTurnDownVolume.setOnClickListener(this);
+        if (btnTurnUpVolume != null) {
+            btnTurnUpVolume.setOnLongClickListener(this::handleLongClick);
+            btnTurnUpVolume.setOnTouchListener(this::handleLongpressBtnKeyEvent);
+            btnTurnUpVolume.setOnClickListener(this);
+        }
+        if (btnTurnDownVolume != null) {
+            btnTurnDownVolume.setOnLongClickListener(this::handleLongClick);
+            btnTurnDownVolume.setOnTouchListener(this::handleLongpressBtnKeyEvent);
+            btnTurnDownVolume.setOnClickListener(this);
+        }
+    }
+
+    private void setOnClickListenerIfExists(int viewId, View.OnClickListener listener) {
+        View v = findViewById(viewId);
+        if (v != null) v.setOnClickListener(listener);
     }
 
     private void initSetting() {
-        settingQuickAccess = SharedData.getInstance().
-                getInt(Constant.KEY_SETTING_LAYOUT_QUICK_ACCESS, SettingLayoutEnums.QUICK_ACCESS_MEDIA_BUTTONS.code());
-        isHapticFeedback = SharedData.getInstance().
-                getBoolean(Constant.KEY_SETTING_BEHAVIOR_HAPTIC_FEEDBACK, true);
-        quickAccessOrderChange = SharedData.getInstance().getBoolean(Constant.KEY_QUICK_ACCESS_ORDER_CHANGE, false);
-        for (Map.Entry<Integer, ViewGroup> entry : layoutQuickAccessMap.entrySet()) {
-            Integer key = entry.getKey();
-            if (key == settingQuickAccess) {
-                entry.getValue().setVisibility(View.VISIBLE);
-            } else {
-                entry.getValue().setVisibility(View.GONE);
+        try {
+            SharedData sharedData = SharedData.getInstance();
+            if (sharedData != null) {
+                settingQuickAccess = sharedData.getInt(Constant.KEY_SETTING_LAYOUT_QUICK_ACCESS, SettingLayoutEnums.QUICK_ACCESS_MEDIA_BUTTONS.code());
+                settingBackground = sharedData.getInt("key_setting_layout_background", SettingLayoutEnums.BACKGROUND_DARK.code());
+                isHapticFeedback = sharedData.getBoolean(Constant.KEY_SETTING_BEHAVIOR_HAPTIC_FEEDBACK, true);
+                quickAccessOrderChange = sharedData.getBoolean(Constant.KEY_QUICK_ACCESS_ORDER_CHANGE, false);
+            }
+        } catch (Exception e) {
+            settingQuickAccess = SettingLayoutEnums.QUICK_ACCESS_MEDIA_BUTTONS.code();
+            settingBackground = SettingLayoutEnums.BACKGROUND_DARK.code();
+            isHapticFeedback = true;
+            quickAccessOrderChange = false;
+        }
+        applyBackground();
+        if (layoutQuickAccessMap != null && !layoutQuickAccessMap.isEmpty()) {
+            for (Map.Entry<Integer, ViewGroup> entry : layoutQuickAccessMap.entrySet()) {
+                ViewGroup vg = entry.getValue();
+                if (vg != null) {
+                    Integer key = entry.getKey();
+                    vg.setVisibility(key == settingQuickAccess ? View.VISIBLE : View.GONE);
+                }
+            }
+        }
+    }
+
+    private void applyBackground() {
+        View rootView = findViewById(android.R.id.content);
+        if (rootView != null) {
+            switch (settingBackground) {
+                case 11:
+                    rootView.setBackgroundColor(getResources().getColor(R.color.main_bg_color_gray));
+                    break;
+                case 12:
+                    rootView.setBackgroundColor(getResources().getColor(R.color.main_bg_color_light));
+                    break;
+                default:
+                    rootView.setBackgroundColor(getResources().getColor(R.color.main_bg_color));
+                    break;
             }
         }
     }
 
     private void getQuickAccessData() {
+        if (mQuickAccessAppsAdapter == null) return;
         if (mQuickAccessAppsAdapter.getItemCount() > 0 && !quickAccessOrderChange) {
             return;
         }
-        SharedData.getInstance().put(Constant.KEY_QUICK_ACCESS_ORDER_CHANGE, false).commit();
+        try {
+            SharedData sharedData = SharedData.getInstance();
+            if (sharedData != null) {
+                sharedData.put(Constant.KEY_QUICK_ACCESS_ORDER_CHANGE, false).commit();
+            }
+        } catch (Exception ignored) {}
         ThreadPoolService.newTask(() -> {
             List<AppItem> apps = DBManager.getInstance().getAppManager().list();
             apps.sort(Comparator.comparingInt(AppItem::getPriority));
@@ -260,9 +358,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, SettingActivity.class);
             startActivity(intent);
         } else if (id == R.id.btn_switch_panel) {
-            int currentItem = viewPagerPanel.getCurrentItem();
-            currentItem = currentItem == 0 ? 1 : 0;
-            viewPagerPanel.setCurrentItem(currentItem);
+            if (viewPagerPanel != null) {
+                int currentItem = viewPagerPanel.getCurrentItem();
+                viewPagerPanel.setCurrentItem(currentItem == 0 ? 1 : 0);
+            }
         } else if (id == R.id.btn_text_input) {
             showBottomSheetDialog();
         } else {
@@ -395,7 +494,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if (TextUtils.isEmpty(originKeyboard)) return;
                         ADBConnectUtil.switchKeyboard(originKeyboard, switchKeyboardCallback);
                     }
-                    SharedData.getInstance().put(Constant.KEY_INPUT_LANGUAGE, type).commit();
+                    try {
+                        SharedData sharedData = SharedData.getInstance();
+                        if (sharedData != null) {
+                            sharedData.put(Constant.KEY_INPUT_LANGUAGE, type).commit();
+                        }
+                    } catch (Exception ignored) {}
                 }
 
                 @Override
@@ -493,16 +597,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void updateConnectionStatus() {
         ConnectInstance bean = ADBConnectUtil.getConnectedBean();
         if (bean != null) {
-            etIpAddress.setText(bean.getIp());
-            etIpAddress.setEnabled(false);
-            btnMainScan.setEnabled(false);
-            btnConnect.setText("断开");
-            btnConnect.setBackgroundResource(R.drawable.background_btn_circle_pm);
+            if (etIpAddress != null) etIpAddress.setText(bean.getIp());
+            if (etIpAddress != null) etIpAddress.setEnabled(false);
+            if (btnMainScan != null) btnMainScan.setEnabled(false);
+            if (btnConnect != null) {
+                btnConnect.setImageResource(R.drawable.ic_disconnect);
+                btnConnect.setImageTintList(getResources().getColorStateList(R.color.close_tv));
+            }
+            if (tvChooseTvConnect != null) {
+                tvChooseTvConnect.setVisibility(View.VISIBLE);
+                tvChooseTvConnect.setText(bean.getAlias());
+            }
         } else {
-            etIpAddress.setEnabled(true);
-            btnMainScan.setEnabled(true);
-            btnConnect.setText("连接");
-            btnConnect.setBackgroundResource(R.drawable.background_btn_circle_ps);
+            if (etIpAddress != null) etIpAddress.setEnabled(true);
+            if (btnMainScan != null) btnMainScan.setEnabled(true);
+            if (btnConnect != null) {
+                btnConnect.setImageResource(R.drawable.ic_link);
+                btnConnect.setImageTintList(getResources().getColorStateList(R.color.green));
+            }
         }
     }
 }
