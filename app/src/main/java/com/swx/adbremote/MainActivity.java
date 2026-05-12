@@ -68,7 +68,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int WHAT_LIST_QUICK_ACCESS = -1;
     private ViewPager2 viewPagerPanel;
     private ImageButton btnSwitchPanel;
-    private TextView tvChooseTvConnect;
+    private LinearLayout llChooseTvConnect;
+    private TextView tvConnectAlias;
+    private TextView tvConnectIp;
     private EditText etIpAddress;
     private ImageButton btnMainScan;
     private Button btnConnect;
@@ -100,12 +102,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
         initSetting();
-        if (tvChooseTvConnect != null) {
+        if (tvConnectAlias != null) {
             ConnectInstance bean = ADBConnectUtil.getConnectedBean();
             if (bean != null) {
-                tvChooseTvConnect.setText(bean.getAlias());
+                tvConnectAlias.setText(bean.getAlias());
             } else {
-                tvChooseTvConnect.setText(this.getString(R.string.text_connect_android_tv));
+                tvConnectAlias.setText(this.getString(R.string.text_connect_android_tv));
             }
         }
         if (settingQuickAccess == SettingLayoutEnums.QUICK_ACCESS_APPLICATIONS.code()) {
@@ -146,7 +148,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             setupLandButtons();
         }
 
-        tvChooseTvConnect = findViewById(R.id.tv_choose_connect);
+        llChooseTvConnect = findViewById(R.id.tv_choose_connect);
+        tvConnectAlias = findViewById(R.id.tv_connect_alias);
+        tvConnectIp = findViewById(R.id.tv_connect_ip);
         etIpAddress = findViewById(R.id.et_ip_address);
         btnMainScan = findViewById(R.id.btn_main_scan);
         btnConnect = findViewById(R.id.btn_connect);
@@ -227,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (mQuickAccessAppsAdapter != null) {
             mQuickAccessAppsAdapter.setOnItemClickListener(this::handleQuickAccessRvItemClick);
         }
-        if (tvChooseTvConnect != null) tvChooseTvConnect.setOnClickListener(this);
+        if (llChooseTvConnect != null) llChooseTvConnect.setOnClickListener(this);
         if (btnMainScan != null) btnMainScan.setOnClickListener(this);
         if (btnConnect != null) btnConnect.setOnClickListener(this);
         if (etIpAddress != null) {
@@ -583,9 +587,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnConnect.setText("断开");
                 btnConnect.setBackgroundResource(R.drawable.background_btn_circle_pm);
             }
-            if (tvChooseTvConnect != null) {
-                tvChooseTvConnect.setVisibility(View.VISIBLE);
-                tvChooseTvConnect.setText(bean.getAlias());
+            if (llChooseTvConnect != null) {
+                llChooseTvConnect.setVisibility(View.VISIBLE);
+            }
+            if (tvConnectAlias != null) {
+                tvConnectAlias.setText(bean.getAlias());
+            }
+            if (tvConnectIp != null) {
+                tvConnectIp.setText(bean.getIp() + ":" + bean.getPort());
             }
         } else {
             if (etIpAddress != null) etIpAddress.setEnabled(true);
@@ -593,6 +602,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (btnConnect != null) {
                 btnConnect.setText("连接");
                 btnConnect.setBackgroundResource(R.drawable.background_btn_circle_ps);
+            }
+            if (llChooseTvConnect != null) {
+                llChooseTvConnect.setVisibility(View.GONE);
             }
         }
     }
