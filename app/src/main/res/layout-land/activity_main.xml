@@ -13,38 +13,27 @@
         android:paddingLeft="15dp"
         android:paddingRight="15dp">
 
-        <ImageButton
-            android:id="@+id/btn_setting"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/background_btn_circle_tr"
-            android:contentDescription="@string/text_setting"
-            android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_setting"
-            app:tint="@color/text_color" />
+
 
         <LinearLayout
             android:id="@+id/tv_choose_connect"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
             android:orientation="vertical"
-            android:gravity="center"
+            android:gravity="center_horizontal"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ll_ip_bar"
-            app:layout_constraintStart_toEndOf="@+id/btn_setting"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/tv_connect_alias"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
+                android:textSize="18sp"
                 android:textColor="@color/text_color"
                 android:text="@string/text_connect_android_tv" />
 
@@ -52,7 +41,7 @@
                 android:id="@+id/tv_connect_ip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textColor="@color/text_color_gray"
                 android:layout_marginTop="2dp" />
 
@@ -62,14 +51,13 @@
             android:id="@+id/ll_ip_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/background_input_connect"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_tv_shutdown"
-            app:layout_constraintStart_toEndOf="@+id/tv_choose_connect"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <EditText
@@ -113,19 +101,6 @@
                 android:textSize="12sp" />
 
         </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/btn_tv_shutdown"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/background_btn_circle_tr"
-            android:contentDescription="@string/text_close_tv"
-            android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_close_tv"
-            app:tint="@color/close_tv" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -396,6 +371,36 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginBottom="15dp">
+
+                <ImageButton
+                    android:id="@+id/btn_setting"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:background="@drawable/background_btn_circle_pm"
+                    android:contentDescription="@string/text_setting"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_setting"
+                    app:tint="@color/text_color" />
+
+                <ImageButton
+                    android:id="@+id/btn_tv_shutdown"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_marginStart="15dp"
+                    android:background="@drawable/background_btn_circle_pm"
+                    android:contentDescription="@string/text_close_tv"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_close_tv"
+                    app:tint="@color/close_tv" />
+
+            </LinearLayout>
 
             <GridLayout
                 android:layout_width="wrap_content"
