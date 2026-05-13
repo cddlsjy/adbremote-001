@@ -315,7 +315,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/layoutApp"
                 app:layout_constraintStart_toEndOf="@+id/layoutVOL"
-                app:layout_constraintTop_toTopOf="@+id/layout_setting_shutdown">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
