@@ -249,83 +249,52 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutBottom"
             android:layout_width="match_parent"
-            android:layout_height="210dp"
+            android:layout_height="180dp"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/layout_setting_shutdown"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutVOL"
                 android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
+                android:layout_height="160dp"
+                android:background="@drawable/background_circle_no_padding"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageButton
                     android:id="@+id/btn_setting"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/background_btn_circle_pm"
                     android:contentDescription="@string/text_setting"
                     android:scaleType="fitCenter"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_setting"
                     app:tint="@color/text_color" />
 
-                <ImageButton
-                    android:id="@+id/btn_tv_shutdown"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/background_btn_circle_pm"
-                    android:contentDescription="@string/text_close_tv"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/ic_close_tv"
-                    app:tint="@color/close_tv" />
-
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layoutVOL"
-                android:layout_width="60dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/background_circle_no_padding"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/layout_setting_shutdown"
-                app:layout_constraintTop_toTopOf="parent">
-
                 <ImageView
                     android:id="@+id/btn_turn_up_volume"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/background_btn_circle_ps"
                     android:contentDescription="@string/text_add_sound"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_sound_add"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_setting"
                     app:tint="@color/white" />
-
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:text="@string/text_sound"
-                    android:textAlignment="center"
-                    android:textColor="@color/text_color"
-                    app:layout_constraintBottom_toTopOf="@+id/btn_turn_down_volume"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btn_turn_up_volume" />
 
                 <ImageButton
                     android:id="@+id/btn_turn_down_volume"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/background_btn_circle_ps"
                     android:contentDescription="@string/text_subtract_sound"
                     android:scaleType="fitCenter"
@@ -467,12 +436,50 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layoutApp"
                 android:layout_width="60dp"
-                android:layout_height="match_parent"
+                android:layout_height="160dp"
                 android:background="@drawable/background_circle_no_padding"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
+                <ImageButton
+                    android:id="@+id/btn_tv_shutdown"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_btn_circle_pm"
+                    android:contentDescription="@string/text_close_tv"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_close_tv"
+                    app:tint="@color/close_tv" />
+
+                <ImageButton
+                    android:id="@+id/btn_channel_up"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_btn_circle_ps"
+                    android:contentDescription="CH+"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_tv_shutdown"
+                    app:srcCompat="@drawable/ic_ch_plus"
+                    app:tint="@color/white" />
+
+                <ImageButton
+                    android:id="@+id/btn_channel_down"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_btn_circle_ps"
+                    android:contentDescription="CH-"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/ic_ch_minus"
+                    app:tint="@color/white" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
